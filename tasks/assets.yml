@@ -1,0 +1,4 @@
+src: client/assets/**/*
+dest: www/
+
+cache: true

@@ -1,0 +1,7 @@
+src: client/index.jade
+dest: www/
+
+cache: true
+
+pipeline:
+  jade:
