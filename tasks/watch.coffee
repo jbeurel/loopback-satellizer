@@ -1,9 +1,16 @@
 gulp = require 'gulp'
 nodemon = require 'gulp-nodemon'
+coffeelint = require 'gulp-coffeelint'
 runSequence = require 'run-sequence'
+
+gulp.task 'coffeelint', ->
+  gulp.src './src/*.coffee'
+  .pipe coffeelint()
+  .pipe coffeelint.reporter()
 
 gulp.task 'nodemon', ['build'], ->
   nodemon script: 'server/server.coffee', ext: 'js coffee json'
+  .on 'change', ['coffeelint']
 
 gulp.task 'watch', ->
   runSequence 'nodemon', ->
