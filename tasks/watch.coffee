@@ -9,7 +9,7 @@ gulp.task 'coffeelint', ->
   .pipe coffeelint.reporter()
 
 gulp.task 'nodemon', ['build'], ->
-  nodemon script: 'server/server.coffee', ext: 'js coffee json'
+  nodemon script: 'server/server.coffee', ext: 'js coffee json', ignore: ['client/*', 'www/*']
   .on 'change', ['coffeelint']
 
 gulp.task 'watch', ->
