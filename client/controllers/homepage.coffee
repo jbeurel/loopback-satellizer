@@ -1,2 +1,3 @@
-app.controller 'HomepageCtrl', ($scope) ->
-  $scope.title = 'coucou'
+app.controller 'HomepageCtrl', ($scope, $auth) ->
+  $scope.authenticate = (provider) ->
+    $auth.authenticate provider

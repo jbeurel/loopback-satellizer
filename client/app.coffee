@@ -1,10 +1,10 @@
 'use strict'
 
-app = angular.module 'karmabmx', [
+app = angular.module 'loopbackSatellizer', [
   'ng'
-  'ngResource'
+  'lbServices'
   'ui.router'
-  'ui.bootstrap'
+  'satellizer'
   'app.templates'
 ]
 
@@ -12,9 +12,12 @@ app.config (
   $locationProvider
   $stateProvider
   $urlRouterProvider
+  $authProvider
 ) ->
 
-  $locationProvider.hashPrefix '!'
+  $locationProvider.html5Mode
+    enabled: true,
+    requireBase: false
 
   $stateProvider
   .state 'homepage',
@@ -23,3 +26,5 @@ app.config (
     templateUrl: 'homepage.html'
 
   $urlRouterProvider.otherwise '/'
+
+  $authProvider.facebook clientId:'835214883204154'

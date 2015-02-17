@@ -13,7 +13,7 @@ gulp.task 'nodemon', ['build'], ->
   .on 'change', ['coffeelint']
 
 gulp.task 'watch', ->
-  runSequence 'nodemon', ->
+  runSequence 'nodemon', 'lb-services', ->
     gulp.watch 'client/assets/**/*', ['assets']
     gulp.watch 'client/**/*.coffee', ['coffee']
     gulp.watch 'client/index.jade', ['jade-index']
