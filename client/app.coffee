@@ -27,4 +27,6 @@ app.config (
 
   $urlRouterProvider.otherwise '/'
 
-  $authProvider.facebook clientId:'835214883204154'
+  $authProvider.facebook
+    clientId:'835214883204154'
+    url: 'api/Users/auth/facebook'
