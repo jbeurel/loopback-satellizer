@@ -57,6 +57,7 @@ module.exports = function(app) {
                             user.picture = user.picture || 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
                             user.displayName = user.displayName || profile.name;
                             User.create(user, function(err, createdUser) {
+                                console.log('create User');
                                 cb(null, createToken(createdUser), createdUser);
                             });
                         });
@@ -75,6 +76,7 @@ module.exports = function(app) {
                             'displayName' : profile.name
                         }
                         User.create(user, function(err, createdUser) {
+                            console.log('create User');
                             cb(null, createToken(createdUser), createdUser);
                         });
                     });
@@ -97,6 +99,22 @@ module.exports = function(app) {
                 {arg: 'token', type: 'string'},
                 {arg: 'user', type: 'object'}
             ]
+        }
+    );
+
+    User.me = function() {
+
+        // read authorization header
+       //  https://github.com/sahat/satellizer/blob/master/examples/server/node/server.js#L86
+
+        User.findOne({ });
+    };
+
+    User.remoteMethod(
+        'me',
+        {
+            http: {path: '/me', verb: 'get'},
+            returns: {arg: 'user', type: 'object'}
         }
     );
 };
