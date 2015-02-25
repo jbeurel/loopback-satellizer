@@ -18,6 +18,8 @@ createToken = (user) ->
     exp: moment().add(14, 'days').unix()
   jwt.encode payload, 'A hard to guess string'
 
+#  https://github.com/strongloop/loopback-component-passport/blob/master/lib/passport-configurator.js#L29
+
 module.exports = (app) ->
   User = app.models.User
 
@@ -105,6 +107,7 @@ module.exports = (app) ->
 
   User.me = (req, cb) ->
     # read authorization header
+    # -> Create middleware -> https://github.com/strongloop/loopback/blob/master/server/middleware/status.js
     #  https://github.com/sahat/satellizer/blob/master/examples/server/node/server.js#L86
 
     unless req.headers.authorization
