@@ -10,8 +10,10 @@ jwt = require('jwt-simple')
 ###
 
 createToken = (user) ->
+
+  console.log 'createToken function', user
   payload =
-    sub: user._id
+    user: user
     iat: moment().unix()
     exp: moment().add(14, 'days').unix()
   jwt.encode payload, 'A hard to guess string'
@@ -101,16 +103,29 @@ module.exports = (app) ->
       arg: 'user', type: 'object'
     ]
 
-  User.me = (cb) ->
+  User.me = (req, cb) ->
     # read authorization header
     #  https://github.com/sahat/satellizer/blob/master/examples/server/node/server.js#L86
-    cb null, username: 'toto'
+
+    unless req.headers.authorization
+      cb status: 401,  message: 'Please make sure your request has an Authorization header'
+
+    token = req.headers.authorization.split(' ')[1]
+    payload = jwt.decode(token, 'A hard to guess string')
+
+    if payload.exp <= moment().unix()
+      cb status: 401, message: 'Token has expired'
+
+    cb null, payload.user
     return
 
   User.remoteMethod 'me',
     http:
       path: '/me'
       verb: 'get'
+    accepts: [
+      arg: 'req', type: 'object', http: source: 'req'
+    ]
     returns:
       arg: 'user'
       type: 'object'
