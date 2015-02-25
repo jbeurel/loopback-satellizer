@@ -1,5 +1,5 @@
-app.factory 'Account', ($http) ->
+app.factory 'Account', (User) ->
   return {
     getProfile: ->
-      return $http.get '/api/Users/me'
+      return User.me()
   }
