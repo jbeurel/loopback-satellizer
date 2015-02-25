@@ -102,12 +102,12 @@ module.exports = function(app) {
         }
     );
 
-    User.me = function() {
+    User.me = function(cb) {
 
         // read authorization header
        //  https://github.com/sahat/satellizer/blob/master/examples/server/node/server.js#L86
 
-        User.findOne({ });
+        cb(null, {username:'toto'});
     };
 
     User.remoteMethod(
