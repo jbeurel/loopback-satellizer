@@ -11,9 +11,8 @@ jwt = require('jwt-simple')
 
 createToken = (user) ->
 
-  console.log 'createToken function', user
   payload =
-    user: user
+    sub: user.id
     iat: moment().unix()
     exp: moment().add(14, 'days').unix()
   jwt.encode payload, 'A hard to guess string'
@@ -116,7 +115,11 @@ module.exports = (app) ->
     if payload.exp <= moment().unix()
       cb status: 401, message: 'Token has expired'
 
-    cb null, payload.user
+    console.log 'payload', payload
+
+#    TODO: findById payload -> return user
+
+    cb null, payload.sub
     return
 
   User.remoteMethod 'me',
