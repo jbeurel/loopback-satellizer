@@ -17,6 +17,8 @@ createToken = (user) ->
     exp: moment().add(14, 'days').unix()
   jwt.encode payload, 'A hard to guess string'
 
+#  https://github.com/strongloop/loopback-component-passport/blob/master/lib/passport-configurator.js#L29
+
 module.exports = (app) ->
   User = app.models.User
 
@@ -35,7 +37,7 @@ module.exports = (app) ->
       json: true
     }, (err, response, accessToken) ->
       if response.statusCode != 200
-        cb 500, accessToken.error.message
+        cb status:500, message: accessToken.error.message
       accessToken = qs.parse(accessToken)
       # Step 2. Retrieve profile information about the current user.
       request.get {
@@ -44,16 +46,16 @@ module.exports = (app) ->
         json: true
       }, (err, response, profile) ->
         if response.statusCode != 200
-          cb 500, message: profile.error.message
+          cb status:500, message: profile.error.message
         if req.headers.authorization
           User.findOne { facebook: profile.id }, (err, existingUser) ->
             if existingUser
-              cb 409, message: 'There is already a Facebook account that belongs to you'
+              cb status: 409, message: 'There is already a Facebook account that belongs to you'
             token = req.headers.authorization.split(' ')[1]
             payload = jwt.decode(token, 'A hard to guess string')
             User.find payload.sub, (err, user) ->
               if !user
-                cb 400, message: 'User not found'
+                cb status: 400, message: 'User not found'
               user.facebook = profile.id
               user.picture = user.picture or 'https://graph.facebook.com/' + profile.id + '/picture?type=large'
               user.displayName = user.displayName or profile.name
@@ -104,6 +106,7 @@ module.exports = (app) ->
 
   User.me = (req, cb) ->
     # read authorization header
+    # -> Create middleware -> https://github.com/strongloop/loopback/blob/master/server/middleware/status.js
     #  https://github.com/sahat/satellizer/blob/master/examples/server/node/server.js#L86
 
     unless req.headers.authorization
