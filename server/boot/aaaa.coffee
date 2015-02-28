@@ -60,7 +60,7 @@ module.exports = (app) ->
               user.picture = user.picture or 'https://graph.facebook.com/' + profile.id + '/picture?type=large'
               user.displayName = user.displayName or profile.name
               User.create user, (err, createdUser) ->
-                console.log 'create User'
+                console.log 'create User 1', createdUser
                 cb null, createToken(createdUser), createdUser
                 return
               return
@@ -77,7 +77,7 @@ module.exports = (app) ->
               'email': profile.email
               'displayName': profile.name
             User.create user, (err, createdUser) ->
-              console.log 'create User'
+              console.log 'create User 2', createdUser
               cb null, createToken(createdUser), createdUser
               return
             return
@@ -118,12 +118,8 @@ module.exports = (app) ->
     if payload.exp <= moment().unix()
       cb status: 401, message: 'Token has expired'
 
-    console.log 'payload', payload
-
-#    TODO: findById payload -> return user
-
-    cb null, payload.sub
-    return
+    User.findById payload.sub, (err, user) ->
+      cb null, user
 
   User.remoteMethod 'me',
     http:
@@ -135,4 +131,5 @@ module.exports = (app) ->
     returns:
       arg: 'user'
       type: 'object'
+      root: true
   return

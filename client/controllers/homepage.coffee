@@ -4,4 +4,6 @@ app.controller 'HomepageCtrl', ($scope, $auth, Account) ->
 
   $scope.isAuthenticated = $auth.isAuthenticated()
 
-  $scope.getProfile = Account.getProfile
+  $scope.getProfile = ->
+    Account.getProfile().$promise.then (user) ->
+      $scope.profile = user
