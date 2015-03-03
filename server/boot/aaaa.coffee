@@ -38,6 +38,7 @@ module.exports = (app) ->
     }, (err, response, accessToken) ->
       if response.statusCode != 200
         cb status:500, message: accessToken.error.message
+        return
       accessToken = qs.parse(accessToken)
       # Step 2. Retrieve profile information about the current user.
       request.get {
@@ -47,20 +48,22 @@ module.exports = (app) ->
       }, (err, response, profile) ->
         if response.statusCode != 200
           cb status:500, message: profile.error.message
+          return
         if req.headers.authorization
           User.findOne { facebook: profile.id }, (err, existingUser) ->
             if existingUser
               cb status: 409, message: 'There is already a Facebook account that belongs to you'
+              return
             token = req.headers.authorization.split(' ')[1]
             payload = jwt.decode(token, 'A hard to guess string')
-            User.find payload.sub, (err, user) ->
+            User.findById payload.sub, (err, user) ->
               if !user
                 cb status: 400, message: 'User not found'
+                return
               user.facebook = profile.id
               user.picture = user.picture or 'https://graph.facebook.com/' + profile.id + '/picture?type=large'
               user.displayName = user.displayName or profile.name
               User.create user, (err, createdUser) ->
-                console.log 'create User 1', createdUser
                 cb null, createToken(createdUser), createdUser
                 return
               return
@@ -71,13 +74,13 @@ module.exports = (app) ->
             if existingUser
               token = createToken(existingUser)
               cb null, token
+              return
             user =
               'facebook': profile.id
               'picture': 'https://graph.facebook.com/' + profile.id + '/picture?type=large'
               'email': profile.email
               'displayName': profile.name
             User.create user, (err, createdUser) ->
-              console.log 'create User 2', createdUser
               cb null, createToken(createdUser), createdUser
               return
             return
@@ -111,15 +114,18 @@ module.exports = (app) ->
 
     unless req.headers.authorization
       cb status: 401,  message: 'Please make sure your request has an Authorization header'
+      return
 
     token = req.headers.authorization.split(' ')[1]
     payload = jwt.decode(token, 'A hard to guess string')
 
     if payload.exp <= moment().unix()
       cb status: 401, message: 'Token has expired'
+      return
 
     User.findById payload.sub, (err, user) ->
       cb null, user
+      return
 
   User.remoteMethod 'me',
     http:
