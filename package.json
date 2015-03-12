@@ -43,7 +43,8 @@
     "serve-favicon": "^2.0.1",
     "request": "^2.53.0",
     "moment": "^2.9.0",
-    "jwt-simple": "^0.2.0"
+    "jwt-simple": "^0.2.0",
+    "loopback-connector-mongodb": "^1.8.0"
   },
   "optionalDependencies": {
     "loopback-explorer": "^1.1.0"

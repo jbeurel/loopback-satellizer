@@ -50,7 +50,7 @@ module.exports = (app) ->
           cb status:500, message: profile.error.message
           return
         if req.headers.authorization
-          User.findOne { facebook: profile.id }, (err, existingUser) ->
+          User.findOne {where: {facebook: profile.id }}, (err, existingUser) ->
             if existingUser
               cb status: 409, message: 'There is already a Facebook account that belongs to you'
               return
@@ -63,14 +63,14 @@ module.exports = (app) ->
               user.facebook = profile.id
               user.picture = user.picture or 'https://graph.facebook.com/' + profile.id + '/picture?type=large'
               user.displayName = user.displayName or profile.name
-              User.create user, (err, createdUser) ->
+              user.save {}, (err, createdUser) ->
                 cb null, createToken(createdUser), createdUser
                 return
               return
             return
         else
           # Step 3b. Create a new user account or return an existing one.
-          User.findOne { facebook: profile.id }, (err, existingUser) ->
+          User.findOne {where: {facebook: profile.id}}, (err, existingUser) ->
             if existingUser
               token = createToken(existingUser)
               cb null, token
@@ -131,7 +131,7 @@ module.exports = (app) ->
       }, (err, response, profile) ->
         # Step 3a. Link user accounts.
         if req.headers.authorization
-          User.findOne { google: profile.sub }, (err, existingUser) ->
+          User.findOne {where: {google: profile.sub}}, (err, existingUser) ->
             if existingUser
               cb status: 409, message: 'There is already a Google account that belongs to you'
               return
@@ -144,21 +144,19 @@ module.exports = (app) ->
               user.google = profile.sub
               user.picture = user.picture or profile.picture.replace('sz=50', 'sz=200')
               user.displayName = user.displayName or profile.name
-              User.create user, (err, createdUser) ->
+              user.save {}, (err, createdUser) ->
                 cb null, createToken(createdUser), createdUser
                 return
               return
             return
         else
           # Step 3b. Create a new user account or return an existing one.
-          User.findOne { google: profile.sub }, (err, existingUser) ->
+          User.findOne {where: {google: profile.sub}}, (err, existingUser) ->
             if existingUser
               token = createToken(existingUser)
               cb null, token
               return
 
-#            console.log 'profile', profile
-            console.log 'profile', profile
             user =
              'google': profile.sub
              'picture': profile.picture.replace('sz=50', 'sz=200')
@@ -206,7 +204,6 @@ module.exports = (app) ->
       cb status: 401, message: 'Token has expired'
       return
 
-    console.log payload.sub
     User.findById payload.sub, (err, user) ->
       cb null, user
       return
