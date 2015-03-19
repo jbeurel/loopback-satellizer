@@ -1,9 +1,5 @@
-app.controller 'HomepageCtrl', ($scope, $auth, Account) ->
+app.controller 'HomepageCtrl', ($scope, $auth, Account, $state) ->
   $scope.authenticate = (provider) ->
     $auth.authenticate provider
-
-  $scope.isAuthenticated = $auth.isAuthenticated()
-
-  $scope.getProfile = ->
-    Account.getProfile().$promise.then (user) ->
-      $scope.profile = user
+    .then ->
+      $state.go('profile')

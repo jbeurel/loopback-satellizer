@@ -24,6 +24,10 @@ app.config (
     url: '/'
     controller: 'HomepageCtrl'
     templateUrl: 'homepage.html'
+  .state 'profile',
+    url: '/profile'
+    controller: 'ProfileCtrl'
+    templateUrl: 'profile.html'
 
   $urlRouterProvider.otherwise '/'
 
