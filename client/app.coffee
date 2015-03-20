@@ -31,6 +31,8 @@ app.config (
 
   $urlRouterProvider.otherwise '/'
 
+  $authProvider.unlinkUrl = '/api/Users/unlink/';
+
   $authProvider.facebook
     clientId:'835214883204154'
     url: 'api/Users/auth/facebook'

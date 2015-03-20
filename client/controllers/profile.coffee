@@ -6,3 +6,13 @@ app.controller 'ProfileCtrl', ($scope, $auth, Account) ->
       $scope.profile = user
 
   $scope.updateProfile()
+
+  $scope.link = (provider) ->
+    $auth.link provider
+    .then ->
+      $scope.updateProfile()
+
+  $scope.unlink = (provider) ->
+    $auth.unlink provider
+    .then ->
+      $scope.updateProfile()

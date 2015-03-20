@@ -1,3 +1,49 @@
-button(ng-click="updateProfile()") Update Profile
-pre {{ isAuthenticated }}
+pre Is authenticated: {{ isAuthenticated }}
 pre {{ profile | json }}
+
+legend
+  i.ion-link
+  |  Linked Accounts
+.btn-group-vertical
+  button.btn.btn-sm.btn-danger(ng-if='profile.facebook', ng-click="unlink('facebook')")
+    i.fa.fa-facebook
+    |  Unlink Facebook Account
+  button.btn.btn-sm.btn-primary(ng-if='!profile.facebook', ng-click="link('facebook')")
+    i.fa.fa-facebook
+    |  Link Facebook Account
+  button.btn.btn-sm.btn-danger(ng-if='profile.google', ng-click="unlink('google')")
+    i.fa.fa-google
+    |  Unlink Google Account
+  button.btn.btn-sm.btn-primary(ng-if='!profile.google', ng-click="link('google')")
+    i.fa.fa-google
+    |  Link Google Account
+  button.btn.btn-sm.btn-danger(ng-if='profile.linkedin', ng-click="unlink('linkedin')")
+    i.fa.fa-linkedin
+    |  Unlink LinkedIn Account
+  button.btn.btn-sm.btn-primary(ng-if='!profile.linkedin', ng-click="link('linkedin')")
+    i.fa.fa-linkedin
+    |  Link LinkedIn Account
+  button.btn.btn-sm.btn-danger(ng-if='profile.twitter', ng-click="unlink('twitter')")
+    i.fa.fa-twitter
+    |  Unlink Twitter Account
+  button.btn.btn-sm.btn-primary(ng-if='!profile.twitter', ng-click="link('twitter')")
+    i.fa.fa-twitter
+    |  Link Twitter Account
+  button.btn.btn-sm.btn-danger(ng-if='profile.github', ng-click="unlink('github')")
+    i.fa.fa-github
+    |  Unlink GitHub Account
+  button.btn.btn-sm.btn-primary(ng-if='!profile.github', ng-click="link('github')")
+    i.fa.fa-github
+    |  Link GitHub Account
+  button.btn.btn-sm.btn-danger(ng-if='profile.foursquare', ng-click="unlink('foursquare')")
+    i.fa.fa-foursquare
+    |  Unlink Foursquare Account
+  button.btn.btn-sm.btn-primary(ng-if='!profile.foursquare', ng-click="link('foursquare')")
+    i.fa.fa-foursquare
+    |  Link Foursquare Account
+  button.btn.btn-sm.btn-danger(ng-if='profile.yahoo', ng-click="unlink('yahoo')")
+    i.fa.fa-yahoo
+    |  Unlink Yahoo Account
+  button.btn.btn-sm.btn-primary(ng-if='!profile.yahoo', ng-click="link('yahoo')")
+    i.fa.fa-yahoo
+    |  Link Yahoo Account
