@@ -188,6 +188,43 @@ module.exports = (app) ->
       arg: 'user', type: 'object'
     ]
 
+  User.unlink = (req, provider, cb) ->
+
+    # read authorization header
+    # -> Create middleware -> https://github.com/strongloop/loopback/blob/master/server/middleware/status.js
+    #  https://github.com/sahat/satellizer/blob/master/examples/server/node/server.js#L86
+
+    unless req.headers.authorization
+      cb status: 401,  message: 'Please make sure your request has an Authorization header !'
+      return
+
+    token = req.headers.authorization.split(' ')[1]
+    payload = jwt.decode(token, 'A hard to guess string')
+
+    if payload.exp <= moment().unix()
+      cb status: 401, message: 'Token has expired'
+      return
+
+    User.findById payload.sub, (err, user) ->
+      if !user
+        cb status: 400, message: 'User not found'
+        return
+
+      user[provider] = null
+      user.save ->
+        cb()
+        return
+
+  User.remoteMethod 'unlink',
+    http:
+      path: '/unlink/:provider'
+      verb: 'get'
+    accepts: [
+      arg: 'req', type: 'object', http: source : 'req'
+    ,
+      arg: 'provider', type: 'string'
+    ]
+
   User.me = (req, cb) ->
     # read authorization header
     # -> Create middleware -> https://github.com/strongloop/loopback/blob/master/server/middleware/status.js
